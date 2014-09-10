@@ -1,5 +1,5 @@
-bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
-#bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
+bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, spender_ltv=NULL, monetization=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
+  #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
   
   # probability model:  
   # conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0  
@@ -7,6 +7,11 @@ bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1,
   # sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
   # mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0      
   
+  if (!is.null(monetization)) beta0 <- 2 - alpha0 + (alpha0 - 1) / monetization #optionally parameterize the beta prior using monetization rate
+  
+  if (!is.null(spender_ltv)) m0 <- log(spender_ltv)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
+  
+  ####
   nonzero.count <- rowSums(data>0, na.rm=TRUE)
   sample.sizes <- rowSums(!is.na(data)) #vector of sample sizes 
   
@@ -41,14 +46,14 @@ bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1,
   }      
   
   if (save.hist){    
-  hist.data <- data.frame(group=NA, bin=NA, density=NA)
+    hist.data <- data.frame(group=NA, bin=NA, density=NA)
     for (g in 1:ngroups){
       h <- hist(posterior.samples[posterior.samples[, 'group']==g, 'mean.revenue'], plot=FALSE)
       hist.data <- rbind(hist.data, data.frame(group=g, bin=h$mids, density=h$density))      
     }          
   }
   hist.data <- hist.data[-1,]
-    
+  
   # stopping rule  
   
   #winner <- which.max(prob.winning) #which group has the highest posterior probability of winning  
@@ -60,7 +65,7 @@ bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1,
     loss <- apply(rev.samps, FUN=max, MARGIN=2) - rev.samps[g,] #difference between the MAP mean and the group that is actually the best        
     risk[g]  <- mean(loss)            
   }
-   
+  
   return(list(risk=risk,winner=(1:ngroups)[risk < tolerance], stop.test=min(risk)<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level, hist.data=hist.data)) #sample size and winner
   #return(list(risk=risk, stop.test=risk<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level)) #sample size and winner when test stops      
   
