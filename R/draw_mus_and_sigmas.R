@@ -3,7 +3,7 @@
 # k0 - Certainty about m0.  Compare with number of data samples.
 # s_sq0 - Number of degrees of freedom of variance.
 # v0 - Scale of the sigma_squared parameter.  Compare with number of data samples.
-draw_mus_and_sigmas <- function(data,m0,k0,s_sq0,v0,n_samples=10000){
+draw_mus_and_sigmas <- function(data,m0=1,k0=1,s_sq0=1,v0=1,n_samples=10000){
   #require(MCMCpack)
   N <- length(data)   # number of samples
   the_mean <- mean(data) # find the mean of the data
@@ -28,7 +28,10 @@ draw_mus_and_sigmas <- function(data,m0,k0,s_sq0,v0,n_samples=10000){
   mean_norm <- mN
   sd_norm <- sqrt(sig_sq_samples/kN) 
   mu_samples <- rnorm(n=n_samples, mean=mean_norm,sd=sd_norm)      
-  
-  #return(list(mu=mu_samples, mean_norm, sd_norm))
-  return(list(mu_samples=mu_samples, sig_sq_samples=sig_sq_samples))
+    
+  return(list(mu_samples = mu_samples, 
+              sig_sq_samples = sig_sq_samples, 
+              mu_par = list(mN=mN, kN=kN),
+              sig_sq_par = list(vN= vN, s_sqN = vN_times_s_sqN/vN)))
+  #return(list(mu_samples=mu_samples, sig_sq_samples=sig_sq_samples))
 }
