@@ -10,5 +10,5 @@ Currently, two models are implemented:
 An early stopping [2] is used to determine when to end a test.
 
 References
-[1] http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/
-[2] http://www.bayesianwitch.com/blog/2014/bayesian_ab_test.html
+- [1] http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/
+- [2] http://www.bayesianwitch.com/blog/2014/bayesian_ab_test.html
