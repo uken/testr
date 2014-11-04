@@ -5,11 +5,10 @@
 A/B Test using Beta-Binomial Model
 }
 \description{
-Perform bayesian analysis of an experiment with a binary response variable. The experiment is modelled with a binomial likelihood and a beta prior.
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Perform bayesian analysis of an experiment with a binary response variable. The experiment is modelled with a binomial likelihood and a beta prior. The beta is parameterized either with two shape parameters {alpha0, beta0} or with one shape parameter alpha0 and the  expected_conversion_rate (mode of the beta prior)
 }
 \usage{
-beta_binomial_ab_test(y, n, alpha0 = 1, beta0 = 1, tolerance = 0.001, nsim = 100000, plot.density = TRUE, conf.level = 0.1)
+beta_binomial_ab_test(y, n, alpha0 = 1, beta0 = 1, tolerance = 0.001, nsim = 100000, plot.density = TRUE, conf.level = 0.1, expected_conversion_rate=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,10 +19,10 @@ vector of counts of successes (i.e. number of converted users across the groups)
 vector of counts of trials (i.e number of total users)
 }
   \item{alpha0}{
-first shape parameter for beta prior
+first shape parameter for beta prior. Increasing alpha0 reduces uncertainty about expected_conversion_rate.
 }
   \item{beta0}{
-second shape parameter for beta prior
+second shape parameter for beta prior. Ignored if expected_conversion_rate is given.
 }
   \item{tolerance}{
 smallest difference we care about 
@@ -36,6 +35,9 @@ plot posterior densities? (T/F)
 }
   \item{conf.level}{
 specifies alpha for (1-alpha)*100\% credible intervals
+}
+ \item{expected_conversion_rate}{
+before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
 }
 }
 \details{
@@ -61,49 +63,11 @@ Alex Yakubovich, Uken Games Inc.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
+\code{\link{lognormal_ab_test}}
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function (y, n, alpha0 = 1, beta0 = 1, tolerance = 0.001, nsim = 100000, 
-    plot.density = TRUE, conf.level = 0.1) 
-{
-    ngroups <- length(y)
-    ci <- matrix(nrow = ngroups, ncol = 2, dimnames = list(NULL, 
-        c("lower", "upper")))
-    samps <- matrix(nrow = ngroups, ncol = nsim)
-    alpha <- alpha0 + y
-    beta <- n - y + beta0
-    for (g in 1:ngroups) {
-        samps[g, ] <- rbeta(nsim, alpha[g], beta[g])
-        ci[g, ] <- qbeta(c(conf.level/2, 1 - conf.level/2), alpha[g], 
-            beta[g])
-    }
-    posterior.mean <- rowMeans(samps)
-    prob.winning <- rowMeans(samps == matrix(rep(apply(samps, 
-        FUN = max, MARGIN = 2), ngroups), nrow = ngroups, byrow = TRUE))
-    if (plot.density) {
-        for (g in 1:ngroups) curve(dbeta(x, alpha[g], beta[g]), 
-            from = 0, to = 0.15, n = 100000, col = "darkblue", 
-            lwd = 2, xlab = "retention", ylab = "density", add = g > 
-                1)
-    }
-    risk <- rep(NA_real_, ngroups)
-    for (g in 1:ngroups) {
-        loss <- apply(samps, FUN = max, MARGIN = 2) - samps[g, 
-            ]
-        risk[g] <- mean(loss)
-    }
-    return(list(y = y, n = n, risk = risk, winner = (1:ngroups)[risk < 
-        tolerance], stop.test = min(risk) < tolerance, tolerance = tolerance, 
-        prob.winning = prob.winning, posterior.mean = posterior.mean, 
-        ci = ci, conf.level = conf.level, posterior_parameters = data.frame(alpha = alpha, 
-            beta = beta)))
-  }
+beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

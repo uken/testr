@@ -1,4 +1,10 @@
-beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1){            
+beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1, expected_conversion_rate=NULL){            
+
+  
+  # parameterize either in terms of expected_conversion_rate if it is provided
+  if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate    
+    
+  ##
   
   ngroups <- length(y)
   

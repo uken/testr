@@ -1,4 +1,4 @@
-bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, spender_ltv=NULL, monetization=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
+lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
   #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
   
   # probability model:  
@@ -7,9 +7,9 @@ bayes_lognormal_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1,
   # sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
   # mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0      
   
-  if (!is.null(monetization)) beta0 <- 2 - alpha0 + (alpha0 - 1) / monetization #optionally parameterize the beta prior using monetization rate
+  if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate #optionally parameterize the beta prior using monetization rate
   
-  if (!is.null(spender_ltv)) m0 <- log(spender_ltv)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
+  if (!is.null(expected_revenue_converted_users)) m0 <- log(expected_revenue_converted_users)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
   
   ####
   nonzero.count <- rowSums(data>0, na.rm=TRUE)

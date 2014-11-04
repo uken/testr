@@ -2,7 +2,7 @@
 \alias{lognormal_ab_test}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-hybrid of beta-binomial model to classify spenders, lognormal for revenue amongst spenders
+hybrid of beta-binomial model to classify spenders, lognormal model for spenders' revenue
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
@@ -36,6 +36,13 @@ number of degrees of freedom of variance
   \item{v0}{
 scale of the sigma_squared parameter. Compare with number of data samples.
 }
+ \item{expected_revenue_converted_users}{
+expected revenue for converted (spending) users
+}
+ \item{expected_conversion_rate}{
+before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
+}
+
   \item{plot.density}{
 plot posterior densities? (T/F)
 }
@@ -72,69 +79,23 @@ return data for posterior histograms? (T/F)
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{plot_prior_lognormal_model}}
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+## simulate A/B/C test for revenue 
+A_data <- c(rep(0,1000), rlnorm(50, meanlog=0))
+B_data <- c(rep(0,1000), rlnorm(60, meanlog=.005))
+C_data <- c(rep(0,1000), rlnorm(80, meanlog=.04))
 
-## The function is currently defined as
-function (data, nsim = 100000, alpha0 = 1, beta0 = 25, m0 = 4, 
-    k0 = 1, s_sq0 = 1, v0 = 5, plot.density = FALSE, conf.level = 0.1, 
-    tolerance = 0.01, save.hist = TRUE) 
-{
-    nonzero.count <- rowSums(data > 0, na.rm = TRUE)
-    sample.sizes <- rowSums(!is.na(data))
-    ngroups <- nrow(data)
-    conv.samps <- spenders.rev.samps <- rev.samps <- matrix(nrow = ngroups, 
-        ncol = nsim)
-    ci <- matrix(nrow = ngroups, ncol = 2, dimnames = list(NULL, 
-        c("lower", "upper")))
-    for (g in 1:ngroups) {
-        nonzeros <- data[g, ]
-        nonzeros <- nonzeros[nonzeros > 0 & !is.na(nonzeros)]
-        conv.samps[g, ] <- rbeta(nsim, nonzero.count[g] + alpha0, 
-            sample.sizes[g] - nonzero.count[g] + beta0)
-        spenders.rev.samps[g, ] <- draw_log_normal_means(nonzeros, 
-            m0, k0, s_sq0, v0, nsim)
-        rev.samps[g, ] <- conv.samps[g, ] * spenders.rev.samps[g, 
-            ]
-        ci[g, ] <- quantile(rev.samps[g, ], probs = c(conf.level/2, 
-            1 - conf.level/2))
-    }
-    posterior.mean <- rowMeans(rev.samps)
-    prob.winning <- rowMeans(rev.samps == matrix(rep(apply(rev.samps, 
-        FUN = max, MARGIN = 2), ngroups), nrow = ngroups, byrow = TRUE))
-    posterior.samples <- data.frame(mean.revenue = as.numeric(t(rev.samps)), 
-        group = as.factor(rep(1:ngroups, each = nsim)))
-    if (plot.density) {
-        x <- ggplot(posterior.samples, aes(x = mean.revenue, 
-            y = ..ncount.., fill = group)) + geom_histogram(alpha = 0.2, 
-            position = "identity", binwidth = 0.005)
-        print(x)
-    }
-    if (save.hist) {
-        hist.data <- data.frame(group = NA, bin = NA, density = NA)
-        for (g in 1:ngroups) {
-            h <- hist(posterior.samples[posterior.samples[, "group"] == 
-                g, "mean.revenue"], plot = FALSE)
-            hist.data <- rbind(hist.data, data.frame(group = g, 
-                bin = h$mids, density = h$density))
-        }
-    }
-    hist.data <- hist.data[-1, ]
-    risk <- rep(NA_real_, ngroups)
-    for (g in 1:ngroups) {
-        loss <- apply(rev.samps, FUN = max, MARGIN = 2) - rev.samps[g, 
-            ]
-        risk[g] <- mean(loss)
-    }
-    return(list(risk = risk, winner = (1:ngroups)[risk < tolerance], 
-        stop.test = min(risk) < tolerance, tolerance = tolerance, 
-        prob.winning = prob.winning, posterior.mean = posterior.mean, 
-        ci = ci, conf.level = conf.level, hist.data = hist.data))
-  }
+n <- max(length(A_data), length(B_data), length(C_data))
+length(A_data) <- length(B_data) <- length(C_data) <- n  #pad with NAs so all vectors are the same size
+
+data <- rbind(A_data, B_data, C_data)
+
+lognormal_ab_test(data, plot.density=TRUE) 
+
+plot_prior_lognormal_model(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+lognormal_ab_test(data, plot.density=TRUE, expected_conversion_rate=0.65, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
