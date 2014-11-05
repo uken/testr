@@ -14,7 +14,12 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   #create matrix where each row is a group (pad with NAs)
   groups <- unique(data[,1])
   ngroups <- length(groups)
-  max_n <- max(table(data[,1]))
+  n <- table(data[,1])  
+  max_n <- max(n)
+  
+  names(data)[1:2] <- c('ab_group', 'revenue')
+  
+  sample.mean <- aggregate(revenue ~ ab_group, data=data, FUN=mean)
   
   data_matrix <- matrix(nrow=ngroups, ncol=max_n)
   for (g in 1:ngroups){
@@ -79,7 +84,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
     risk[g]  <- mean(loss)            
   }
   
-  return(list(risk=risk,winner=(1:ngroups)[risk < tolerance], stop.test=min(risk)<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level, hist.data=hist.data)) #sample size and winner
+  return(list(risk=risk,winner=(1:ngroups)[risk < tolerance], stop.test=min(risk)<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level, hist.data=hist.data, n=n, sample.mean=sample.mean)) #sample size and winner
   #return(list(risk=risk, stop.test=risk<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level)) #sample size and winner when test stops      
   
 }

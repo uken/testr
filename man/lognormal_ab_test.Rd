@@ -13,7 +13,7 @@ lognormal_ab_test(data, nsim = 100000, alpha0 = 1, beta0 = 25, m0 = 4, k0 = 1, s
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{
-data frame, first column = group, second column = observations
+data frame where first column = group, second column = observations
 }
   \item{nsim}{
 number of monte carlo samples
@@ -54,6 +54,12 @@ smallest difference we care about
 }
   \item{save.hist}{
 return data for posterior histograms? (T/F)
+}
+\item{n}{
+vector of sample sizes for all groups
+}
+\item{sample.mean}{
+vector of sample mean revenue across groups 
 }
 }
 \details{
