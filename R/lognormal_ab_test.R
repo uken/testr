@@ -14,7 +14,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   #create matrix where each row is a group (pad with NAs)
   groups <- unique(data[,1])
   ngroups <- length(groups)
-  n <- table(data[,1])  
+  n <- as.numeric(table(data[,1]))
   max_n <- max(n)
   
   names(data)[1:2] <- c('ab_group', 'revenue')
