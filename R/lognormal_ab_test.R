@@ -11,6 +11,19 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   
   if (!is.null(expected_revenue_converted_users)) m0 <- log(expected_revenue_converted_users)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
   
+  #create matrix where each row is a group (pad with NAs)
+  groups <- unique(data[,1])
+  ngroups <- length(groups)
+  max_n <- max(table(data[,1]))
+  
+  data_matrix <- matrix(nrow=ngroups, ncol=max_n)
+  for (g in 1:ngroups){
+    new_data <- data[data[,1]==groups[g],2]
+    length(new_data) <- max_n #pad with NA if needed
+    data_matrix[g,] <- new_data                
+  }
+  data <- data_matrix    
+  
   ####
   nonzero.count <- rowSums(data>0, na.rm=TRUE)
   sample.sizes <- rowSums(!is.na(data)) #vector of sample sizes 

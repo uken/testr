@@ -13,7 +13,7 @@ lognormal_ab_test(data, nsim = 100000, alpha0 = 1, beta0 = 25, m0 = 4, k0 = 1, s
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{
-data.frame or matrix of observed data. 1 row per group (pad with NAs for unequal sample sizes)
+data frame, first column = group, second column = observations
 }
   \item{nsim}{
 number of monte carlo samples
@@ -84,15 +84,12 @@ return data for posterior histograms? (T/F)
 \examples{
 ## simulate A/B/C test for revenue 
 A_data <- c(rep(0,1000), rlnorm(50, meanlog=0))
-B_data <- c(rep(0,1000), rlnorm(60, meanlog=.005))
-C_data <- c(rep(0,1000), rlnorm(80, meanlog=.04))
+B_data <- c(rep(0,1000), rlnorm(50, meanlog=.005))
+C_data <- c(rep(0,1000), rlnorm(50, meanlog=.08))
 
-n <- max(length(A_data), length(B_data), length(C_data))
-length(A_data) <- length(B_data) <- length(C_data) <- n  #pad with NAs so all vectors are the same size
+data <- data.frame(ab_group=rep(c('A','B','C'), each=1050*3), ltv=c(A_data, B_data, C_data))
 
-data <- rbind(A_data, B_data, C_data)
-
-lognormal_ab_test(data, plot.density=TRUE) 
+lognormal_ab_test(data)
 
 plot_prior_lognormal_model(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
 lognormal_ab_test(data, plot.density=TRUE, expected_conversion_rate=0.65, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
