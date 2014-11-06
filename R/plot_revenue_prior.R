@@ -1,4 +1,4 @@
-plot_revenue_prior <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1e4, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot=T, n=101){      
+plot_revenue_prior <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1e4, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot=T){      
   
   # density and random generation for the inverse gamma distribution (not part of base R)
   
@@ -18,7 +18,7 @@ plot_revenue_prior <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1
   ##      
   # log revenue - inv gamma prior over variance 
   s2 <- quantile(rinvgamma2(n, shape=v0/2, scale=v0*s_sq0/2), c(.1, .5, .9, .95))
-  curve(dinvgamma2(x, shape=v0/2, scale=v0*s_sq0/2), from=0, to=s2[4], n=1e4, lwd=2, xlab='variance', ylab='density', main='Inverse gamma prior over variance' )
+  curve(dinvgamma2(x, shape=v0/2, scale=v0*s_sq0/2), from=0, to=s2[4], n=n, lwd=2, xlab='variance', ylab='density', main='Inverse gamma prior over variance' )
   abline(v=s2[1], col='darkblue', lwd=2, lty=2)
   abline(v=s2[2], col='darkred', lwd=2, lty=2)
   abline(v=s2[3], col='darkgreen', lwd=2, lty=2)
@@ -26,9 +26,9 @@ plot_revenue_prior <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1
   # log revenue - normal prior over mu conditioned on sigma^2 
   lim <- m0 + 3*c(-1,1)*sqrt(s2[3]/k0)
   
-  curve(dnorm(x,mean=m0, sd=sqrt(s2[1]/k0)), xlim=lim, n=1e4, lwd=2, xlab='log revenue', ylab='density', col='darkblue', main='Normal prior over mean | variance')
-  curve(dnorm(x,mean=m0, sd=sqrt(s2[2]/k0)), xlim=lim, add=T, n=1e4, lwd=2, col='darkred')
-  curve(dnorm(x,mean=m0, sd=sqrt(s2[3]/k0)), xlim=lim, add=T, n=1e4, lwd=2, col='darkgreen')
+  curve(dnorm(x,mean=m0, sd=sqrt(s2[1]/k0)), xlim=lim, n=n, lwd=2, xlab='log revenue', ylab='density', col='darkblue', main='Normal prior over mean | variance')
+  curve(dnorm(x,mean=m0, sd=sqrt(s2[2]/k0)), xlim=lim, add=T, n=n, lwd=2, col='darkred')
+  curve(dnorm(x,mean=m0, sd=sqrt(s2[3]/k0)), xlim=lim, add=T, n=n, lwd=2, col='darkgreen')
   legend('topright', legend= paste('variance =', round(s2,1)), col=c('darkblue', 'darkred', 'darkgreen'), lwd=rep(2,3))
   
   # combine models
