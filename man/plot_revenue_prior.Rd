@@ -1,5 +1,5 @@
-\name{plot_prior_lognormal_model}
-\alias{plot_prior_lognormal_model}
+\name{plot_revenue_prior}
+\alias{plot_revenue_prior}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Plot the priors for each component of the lognormal model.
@@ -7,7 +7,7 @@ Plot the priors for each component of the lognormal model.
 \description{
 }
 \usage{
-plot_prior_lognormal_model(alpha0 = 1, beta0 = 1, s_sq0 = 1, v0 = 1, m0 = 1, k0 = 1, n = 10000, expected_revenue_converted_users = NULL, expected_conversion_rate = NULL)
+plot_revenue_prior(alpha0 = 1, beta0 = 1, s_sq0 = 1, v0 = 1, m0 = 1, k0 = 1, n = 10000, expected_revenue_converted_users = NULL, expected_conversion_rate = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -65,7 +65,7 @@ Alex Yakubovich, Uken Games Inc.
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-plot_prior_lognormal_model(s_sq0=1.2, v0=73, k0=73, alpha0=10, expected_conversion=.05, expected_revenue_converted_users=5)
+plot_revenue_prior(s_sq0=1.2, v0=73, k0=73, alpha0=10, expected_conversion=.05, expected_revenue_converted_users=5)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

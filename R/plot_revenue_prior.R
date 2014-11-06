@@ -1,4 +1,4 @@
-plot_prior_lognormal_model <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1e4, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL){      
+plot_revenue_prior <- function(alpha0=1, beta0=1, s_sq0=1, v0=1, m0=1, k0=1, n=1e4, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL){      
   
   # density and random generation for the inverse gamma distribution (not part of base R)
   
