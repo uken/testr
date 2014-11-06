@@ -1,4 +1,4 @@
-beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1, expected_conversion_rate=NULL){            
+beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1, expected_conversion_rate=NULL, groups=NULL){            
 
   
   # parameterize either in terms of expected_conversion_rate if it is provided
@@ -45,5 +45,17 @@ beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1
       risk[g]  <- mean(loss)            
     }
     
-    return(list(y=y, n=n, risk=risk,winner=(1:ngroups)[risk < tolerance], stop.test=min(risk)<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level, posterior_parameters=data.frame(alpha=alpha, beta=beta))) #sample size and winner when test stops      
+    return(list(y=y, 
+                n=n, 
+                risk=risk,
+                winner=(1:ngroups)[risk < tolerance], 
+                stop.test=min(risk)<tolerance, 
+                tolerance=tolerance, 
+                prob.winning=prob.winning, 
+                posterior.mean=posterior.mean, 
+                ci=ci, 
+                conf.level=conf.level, 
+                posterior_parameters=data.frame(alpha=alpha, beta=beta), 
+                groups=groups)
+           ) 
 } 

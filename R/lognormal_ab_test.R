@@ -1,4 +1,4 @@
-lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
+lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE, groups=NULL){  
   #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
   
   # probability model:  
@@ -18,6 +18,8 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   max_n <- max(n)
   
   names(data)[1:2] <- c('ab_group', 'revenue')
+  
+  groups <- unique(as.character(data$ab_group))
   
   sample.mean <- aggregate(revenue ~ ab_group, data=data, FUN=mean)$revenue
   
@@ -59,7 +61,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   # visualization
   posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group=as.factor(rep(1:ngroups, each=nsim)))
   if (plot.density){
-    x <- ggplot(posterior.samples, aes(x=mean.revenue, y=..ncount.., fill=group)) +  geom_histogram(alpha=0.2, position="identity", binwidth=.005)
+    x <- ggplot(posterior.samples, aes(x=mean.revenue, y=..ncount.., fill=group)) +  geom_histogram(alpha=0.2, position="identity", binwidth=.005) #drop the dependency on ggplot soon
     print(x)
   }      
   
@@ -84,7 +86,20 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
     risk[g]  <- mean(loss)            
   }
   
-  return(list(risk=risk,winner=(1:ngroups)[risk < tolerance], stop.test=min(risk)<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level, hist.data=hist.data, n=n, sample.mean=sample.mean)) #sample size and winner
-  #return(list(risk=risk, stop.test=risk<tolerance, tolerance=tolerance, prob.winning=prob.winning, posterior.mean=posterior.mean, ci=ci, conf.level=conf.level)) #sample size and winner when test stops      
+  return(list(risk=risk,
+              winner=(1:ngroups)[risk < tolerance], 
+              stop.test=min(risk)<tolerance, 
+              tolerance=tolerance, 
+              prob.winning=prob.winning, 
+              posterior.mean=posterior.mean, 
+              ci=ci, 
+              conf.level=conf.level, 
+              hist.data=hist.data, 
+              n=n, 
+              sample.mean=sample.mean,
+              groups = groups
+            )
+        ) #sample size and winner
+  
   
 }
