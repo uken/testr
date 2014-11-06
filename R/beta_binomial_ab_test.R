@@ -55,7 +55,7 @@ beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1
                 posterior.mean=posterior.mean, 
                 ci=ci, 
                 conf.level=conf.level, 
-                posterior_parameters=data.frame(alpha=alpha, beta=beta), 
+                posterior_parameters=c(alpha=alpha, beta=beta), 
                 groups=groups)
            ) 
 } 
