@@ -19,7 +19,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   
   names(data)[1:2] <- c('ab_group', 'revenue')
   
-  groups <- unique(as.character(data$ab_group))
+  groups <- sort(unique(as.character(data$ab_group)))
   
   sample.mean <- aggregate(revenue ~ ab_group, data=data, FUN=mean)$revenue
   
