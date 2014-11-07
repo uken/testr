@@ -1,4 +1,5 @@
-lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE, groups=NULL){  
+lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
+  library(ggplot2)
   #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
   
   # probability model:  
@@ -12,15 +13,13 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   if (!is.null(expected_revenue_converted_users)) m0 <- log(expected_revenue_converted_users)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
   
   #create matrix where each row is a group (pad with NAs)
-  groups <- unique(data[,1])
-  ngroups <- length(groups)
+  
+  names(data)[1:2] <- c('ab_group', 'revenue')  
+  
   n <- as.numeric(table(data[,1]))
   max_n <- max(n)
-  
-  names(data)[1:2] <- c('ab_group', 'revenue')
-  
   groups <- sort(unique(as.character(data$ab_group)))
-  
+  ngroups <- length(groups)
   sample.mean <- aggregate(revenue ~ ab_group, data=data, FUN=mean)$revenue
   
   data_matrix <- matrix(nrow=ngroups, ncol=max_n)
@@ -59,7 +58,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   
   #########################
   # visualization
-  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group=as.factor(rep(1:ngroups, each=nsim)))
+  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group=as.factor(rep(groups, each=nsim)))
   if (plot.density){
     x <- ggplot(posterior.samples, aes(x=mean.revenue, y=..ncount.., fill=group)) +  geom_histogram(alpha=0.2, position="identity", binwidth=.005) #drop the dependency on ggplot soon
     print(x)
@@ -67,7 +66,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   
   if (save.hist){    
     hist.data <- data.frame(group=NA, bin=NA, density=NA)
-    for (g in 1:ngroups){
+    for (g in groups){
       h <- hist(posterior.samples[posterior.samples[, 'group']==g, 'mean.revenue'], plot=FALSE)
       hist.data <- rbind(hist.data, data.frame(group=g, bin=h$mids, density=h$density))      
     }          
