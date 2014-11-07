@@ -1,4 +1,4 @@
-beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1, expected_conversion_rate=NULL, groups=NULL){            
+beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1e5, plot.density=TRUE, conf.level=.1, expected_conversion_rate=NULL, groups=1:length(y)){            
 
   
   # parameterize either in terms of expected_conversion_rate if it is provided
@@ -44,11 +44,11 @@ beta_binomial_ab_test <- function(y,n, alpha0=1, beta0=1, tolerance=.001, nsim=1
       loss <- apply(samps, FUN=max, MARGIN=2) - samps[g,] #difference between the MAP mean and the group that is actually the best        
       risk[g]  <- mean(loss)            
     }
-    
+            
     return(list(y=y, 
                 n=n, 
                 risk=risk,
-                winner=(1:ngroups)[risk < tolerance], 
+                winner=groups[risk < tolerance], 
                 stop.test=min(risk)<tolerance, 
                 tolerance=tolerance, 
                 prob.winning=prob.winning, 

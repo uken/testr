@@ -86,7 +86,7 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   }
   
   return(list(risk=risk,
-              winner=(1:ngroups)[risk < tolerance], 
+              winner=groups[risk < tolerance], 
               stop.test=min(risk)<tolerance, 
               tolerance=tolerance, 
               prob.winning=prob.winning, 
