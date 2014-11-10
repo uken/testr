@@ -11,6 +11,7 @@ Two probability models are currently supported:
 References
 
  [1] http://www.bayesianwitch.com/blog/2014/bayesian_ab_test.html
+ 
  [2] http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model
  
  
