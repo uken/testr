@@ -48,12 +48,6 @@ beta_binomial_ab_test <- function(y, n,
       curve(dbeta(x,alpha[g], beta[g]), from=0, to=.15, n=1e5, col='darkblue', lwd=2, xlab='retention', ylab='density',add=g>1)
   }
 
-  ##Stop the test early if the risk is below tolerance
-
-    #winner <- which.max(prob.winning) #which group has the highest posterior probability of winning
-    #loss <- apply(samps, FUN=max, MARGIN=2) - samps[winner,] #difference between the MAP mean (mean for the group we think is the best) and the group that is actually the best
-    #risk <- mean(loss)
-
     # compute risk associated with each possible decision
     risk <- rep(NA_real_,ngroups)
     for (g in 1:ngroups){
