@@ -1,13 +1,12 @@
-beta_binomial_ab_test <- function(y,
-                                  n,
-                                  alpha0 = 1,
-                                  beta0 = 1,
-                                  tolerance = .001,
-                                  nsim = 1e5,
+beta_binomial_ab_test <- function(y, n,
+                                  alpha0 = 1, beta0 = 1,
+                                  tolerance = 0.001,
+                                  nsim = 1e6,
                                   plot.density = TRUE,
-                                  conf.level= .1,
+                                  conf.level= 0.1,
                                   expected_conversion_rate = NULL,
-                                  groups= 1:length(y)) {
+                                  groups= 1:length(y)
+) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
   if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
