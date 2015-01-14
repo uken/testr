@@ -11,27 +11,36 @@ beta_binomial_ab_test <- function(y, n,
   # parameterize either in terms of expected_conversion_rate if it is provided
   if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
 
-  ##
-
+  # Create container
   ngroups <- length(y)
+  ci <- matrix(nrow = ngroups,
+               ncol = 2,
+               dimnames = list(NULL, c('lower', 'upper')))
+  samps <- matrix(nrow = ngroups, ncol = nsim)
 
-  ci <- matrix(nrow=ngroups, ncol=2, dimnames=list(NULL, c('lower', 'upper')))
-  samps <- matrix(nrow=ngroups, ncol=nsim) #monte carlo samples. Each row is an A/B/C.. group.
-
-  #posterior parameters
+  # Calculate posterior parameters
   alpha <- alpha0 + y
   beta <- n - y + beta0
 
-  #Sample the posterior P(B>A).
-  for (g in 1:ngroups){
-    samps[g,] <- rbeta(nsim, alpha[g], beta[g])
-    ci[g,] <- qbeta(c(conf.level/2, 1-conf.level/2), alpha[g], beta[g])
+  # Sample the posterior to find P(B>A)
+  for (g in 1:ngroups) {
+    samps[g, ] <- rbeta(nsim, alpha[g], beta[g])
+    ci[g, ] <- qbeta(c(conf.level / 2,
+                       1 - conf.level / 2),
+                     alpha[g],
+                     beta[g])
   }
 
+  # Compose output
   posterior.mean <- rowMeans(samps)
 
   # compute matrix where each entry is 1 if a sample is the best across all groups, 0 otherwise, and take the row means.
-  prob.winning <- rowMeans(samps == matrix(rep(apply(samps, FUN=max, MARGIN=2), ngroups), nrow=ngroups, byrow=TRUE) )
+  prob.winning <- rowMeans(samps == matrix(rep(apply(samps,
+                                                     FUN = max,
+                                                     MARGIN = 2),
+                                               ngroups),
+                                           nrow = ngroups,
+                                           byrow=TRUE))
 
   # plot posterior density
   if(plot.density){
@@ -52,16 +61,17 @@ beta_binomial_ab_test <- function(y, n,
       risk[g]  <- mean(loss)
     }
 
-    return(list(y=y,
-                n=n,
-                risk=risk,
-                winner=groups[risk < tolerance],
-                stop.test=min(risk)<tolerance,
-                tolerance=tolerance,
-                prob.winning=prob.winning,
-                posterior.mean=posterior.mean,
-                ci=ci,
-                conf.level=conf.level,
-                posterior_parameters=data.frame(alpha=alpha, beta=beta),
-                groups=groups)
-           )
+  return(list(y = y,
+              n = n,
+              risk = risk,
+              winner = groups[risk < tolerance],
+              stop.test = min(risk)<tolerance,
+              tolerance = tolerance,
+              prob.winning = prob.winning,
+              posterior.mean = posterior.mean,
+              ci = ci,
+              conf.level = conf.level,
+              posterior_parameters = data.frame(alpha = alpha,
+                                                beta = beta),
+              groups = groups)
+  )
