@@ -14,5 +14,20 @@ References
  
  [2] http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model
  
- 
+Example Usage:
 
+```
+library(devtools)
+install_github('uken/testr')
+library(testr)
+
+beta_binomial_ab_test(y=c(80,90), n=c(1000, 1000))
+
+beta_binomial_ab_test(y=c(80,90), n=c(1000, 1000))
+
+A_data <- c(rep(0,1000), rlnorm(50, meanlog=0))
+B_data <- c(rep(0,1000), rlnorm(80, meanlog=.1))
+data <- data.frame(ab_group=c(rep('A', length(A_data)),rep('B', length(B_data))), ltv=c(A_data, B_data))
+lognormal_ab_test(data, plot.density = T)
+
+```
