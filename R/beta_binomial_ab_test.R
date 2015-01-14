@@ -49,9 +49,11 @@ beta_binomial_ab_test <- function(y, n,
   }
 
     # compute risk associated with each possible decision
-    risk <- rep(NA_real_,ngroups)
-    for (g in 1:ngroups){
-      loss <- apply(samps, FUN=max, MARGIN=2) - samps[g,] #difference between the MAP mean and the group that is actually the best
+    risk <- rep(NA_real_, ngroups)
+    for(g in 1:ngroups) {
+      loss <- apply(samps,
+                    FUN = max,
+                    MARGIN = 2) - samps[g, ] #difference between the MAP mean and the group that is actually the best
       risk[g]  <- mean(loss)
     }
 
