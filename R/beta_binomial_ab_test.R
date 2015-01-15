@@ -9,7 +9,9 @@ beta_binomial_ab_test <- function(y, n,
 ) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
-  if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
+  if (!is.null(expected_conversion_rate)) {
+    beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
+  }
 
   # Create container
   ngroups <- length(y)
