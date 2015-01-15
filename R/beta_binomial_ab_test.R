@@ -47,7 +47,7 @@ beta_binomial_ab_test <- function(y, n,
   # plot posterior density
   if(plot.density) {
     d <- expand.grid(group = seq(1, ngroups, 1),
-                     input = seq(0, 1, 0.01))
+                     input = seq(0, 1, 0.001))
     d$output <- mapply(FUN = dbeta,
                        x = d$input,
                        shape1 = alpha,
