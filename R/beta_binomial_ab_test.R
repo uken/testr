@@ -45,9 +45,24 @@ beta_binomial_ab_test <- function(y, n,
                                            byrow=TRUE))
 
   # plot posterior density
-  if(plot.density){
-    for (g in 1:ngroups)
-      curve(dbeta(x,alpha[g], beta[g]), from=0, to=.15, n=1e5, col='darkblue', lwd=2, xlab='retention', ylab='density',add=g>1)
+  if(plot.density) {
+    d <- expand.grid(group = seq(1, ngroups, 1),
+                     input = seq(0, 1, 0.01))
+    d$output <- mapply(FUN = dbeta,
+                       x = d$input,
+                       shape1 = alpha,
+                       shape2 = beta)
+    print(
+      ggplot(d,
+             aes(x = input,
+                 y = output,
+                 colour = factor(group))) +
+        geom_line() +
+        xlab("Conversion Rate") +
+        ylab("Density") +
+        ggtitle("Posterior Distribution(s)") +
+        scale_colour_discrete(name = "Variant(s)")
+    )
   }
 
     # compute risk associated with each possible decision
