@@ -5,7 +5,7 @@ beta_binomial_ab_test <- function(y, n,
                                   plot.density = TRUE,
                                   conf.level = 0.1,
                                   expected_conversion_rate = NULL,
-                                  groups= 1:length(y)
+                                  groups = 1:length(y),
 ) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
