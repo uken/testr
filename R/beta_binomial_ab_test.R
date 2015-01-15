@@ -2,10 +2,11 @@ beta_binomial_ab_test <- function(y, n,
                                   alpha0 = 1, beta0 = 1,
                                   tolerance = 0.001,
                                   nsim = 1e5,
-                                  plot.density = TRUE,
                                   conf.level = 0.1,
                                   expected_conversion_rate = NULL,
                                   groups = 1:length(y),
+                                  plot.density = TRUE,
+                                  plot.limits = c(0, 1)
 ) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
@@ -62,6 +63,7 @@ beta_binomial_ab_test <- function(y, n,
         ggplot2::ylab("Density") +
         ggplot2::ggtitle("Posterior Distribution(s)") +
         ggplot2::scale_colour_discrete(name = "Variant(s)")
+        ggplot2::coord_cartesian(xlim = plot.limits)
     )
   }
 
