@@ -88,3 +88,4 @@ beta_binomial_ab_test <- function(y, n,
                                                 beta = beta),
               groups = groups)
   )
+}
