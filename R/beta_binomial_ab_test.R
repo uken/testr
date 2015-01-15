@@ -1,7 +1,7 @@
 beta_binomial_ab_test <- function(y, n,
                                   alpha0 = 1, beta0 = 1,
                                   tolerance = 0.001,
-                                  nsim = 1e6,
+                                  nsim = 1e5,
                                   plot.density = TRUE,
                                   conf.level= 0.1,
                                   expected_conversion_rate = NULL,
