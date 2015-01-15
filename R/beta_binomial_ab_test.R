@@ -3,7 +3,7 @@ beta_binomial_ab_test <- function(y, n,
                                   tolerance = 0.001,
                                   nsim = 1e5,
                                   plot.density = TRUE,
-                                  conf.level= 0.1,
+                                  conf.level = 0.1,
                                   expected_conversion_rate = NULL,
                                   groups= 1:length(y)
 ) {
@@ -65,20 +65,20 @@ beta_binomial_ab_test <- function(y, n,
     )
   }
 
-    # compute risk associated with each possible decision
-    risk <- rep(NA_real_, ngroups)
-    for(g in 1:ngroups) {
-      loss <- apply(samps,
-                    FUN = max,
-                    MARGIN = 2) - samps[g, ] #difference between the MAP mean and the group that is actually the best
-      risk[g]  <- mean(loss)
-    }
+  # compute risk associated with each possible decision
+  risk <- rep(NA_real_, ngroups)
+  for(g in 1:ngroups) {
+    loss <- apply(samps,
+                  FUN = max,
+                  MARGIN = 2) - samps[g, ] #difference between the MAP mean and the group that is actually the best
+    risk[g]  <- mean(loss)
+  }
 
   return(list(y = y,
               n = n,
               risk = risk,
               winner = groups[risk < tolerance],
-              stop.test = min(risk)<tolerance,
+              stop.test = min(risk) < tolerance,
               tolerance = tolerance,
               prob.winning = prob.winning,
               posterior.mean = posterior.mean,
