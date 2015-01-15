@@ -53,15 +53,15 @@ beta_binomial_ab_test <- function(y, n,
                        shape1 = alpha,
                        shape2 = beta)
     print(
-      ggplot(d,
-             aes(x = input,
-                 y = output,
-                 colour = factor(group))) +
-        geom_line() +
-        xlab("Conversion Rate") +
-        ylab("Density") +
-        ggtitle("Posterior Distribution(s)") +
-        scale_colour_discrete(name = "Variant(s)")
+      ggplot2::ggplot(d,
+                      ggplot2::aes(x = input,
+                                   y = output,
+                                   colour = factor(group))) +
+        ggplot2::geom_line() +
+        ggplot2::xlab("Conversion Rate") +
+        ggplot2::ylab("Density") +
+        ggplot2::ggtitle("Posterior Distribution(s)") +
+        ggplot2::scale_colour_discrete(name = "Variant(s)")
     )
   }
 
