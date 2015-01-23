@@ -68,7 +68,7 @@ beta_binomial_ab_test <- function(y, n,
         ggplot2::geom_line() +
         ggplot2::xlab("Conversion Rate") +
         ggplot2::ylab("Density") +
-        ggplot2::ggtitle(paste("Posterior Distribution(s)", plot.name)) +
+        ggplot2::ggtitle(paste(plot.name)) +
         ggplot2::scale_colour_discrete(name = "Variant(s)",
                                        labels = plot.labels) +
         ggplot2::scale_x_continuous(labels = scales::percent_format()) +
