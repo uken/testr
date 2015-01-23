@@ -72,7 +72,7 @@ beta_binomial_ab_test <- function(y, n,
                                        labels = plot.labels) +
         ggplot2::scale_x_continuous(labels = scales::percent_format()) +
         ggplot2::coord_cartesian(xlim = plot.limits) +
-        ggtheme::theme_bw(base_size = 20)
+        ggthemes::theme_bw(base_size = 20)
     )
   }
 
