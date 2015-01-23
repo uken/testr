@@ -7,7 +7,8 @@ beta_binomial_ab_test <- function(y, n,
                                   groups = 1:length(y),
                                   plot.density = TRUE,
                                   plot.limits = c(0, 1),
-                                  plot.labels = NULL
+                                  plot.labels = NULL,
+                                  plot.name = ""
 ) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
@@ -67,7 +68,7 @@ beta_binomial_ab_test <- function(y, n,
         ggplot2::geom_line() +
         ggplot2::xlab("Conversion Rate") +
         ggplot2::ylab("Density") +
-        ggplot2::ggtitle("Posterior Distribution(s)") +
+        ggplot2::ggtitle(paste("Posterior Distribution(s)", plot.name)) +
         ggplot2::scale_colour_discrete(name = "Variant(s)",
                                        labels = plot.labels) +
         ggplot2::scale_x_continuous(labels = scales::percent_format()) +
