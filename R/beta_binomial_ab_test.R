@@ -6,7 +6,8 @@ beta_binomial_ab_test <- function(y, n,
                                   expected_conversion_rate = NULL,
                                   groups = 1:length(y),
                                   plot.density = TRUE,
-                                  plot.limits = c(0, 1)
+                                  plot.limits = c(0, 1),
+                                  plot.labels = NULL
 ) {
 
   # parameterize either in terms of expected_conversion_rate if it is provided
@@ -14,8 +15,13 @@ beta_binomial_ab_test <- function(y, n,
     beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
   }
 
-  # Create container
   ngroups <- length(y)
+
+  if(is.null(plot.labels)) {
+    plot.labels <- 1:ngroups
+  }
+
+  # Create container
   ci <- matrix(nrow = ngroups,
                ncol = 2,
                dimnames = list(NULL, c('lower', 'upper')))
@@ -62,7 +68,8 @@ beta_binomial_ab_test <- function(y, n,
         ggplot2::xlab("Conversion Rate") +
         ggplot2::ylab("Density") +
         ggplot2::ggtitle("Posterior Distribution(s)") +
-        ggplot2::scale_colour_discrete(name = "Variant(s)") +
+        ggplot2::scale_colour_discrete(name = "Variant(s)",
+                                       labels = plot.labels) +
         ggplot2::scale_x_continuous(labels = scales::percent_format()) +
         ggplot2::coord_cartesian(xlim = plot.limits)
     )
