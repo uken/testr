@@ -71,7 +71,8 @@ beta_binomial_ab_test <- function(y, n,
         ggplot2::scale_colour_discrete(name = "Variant(s)",
                                        labels = plot.labels) +
         ggplot2::scale_x_continuous(labels = scales::percent_format()) +
-        ggplot2::coord_cartesian(xlim = plot.limits)
+        ggplot2::coord_cartesian(xlim = plot.limits) +
+        ggtheme::theme_bw(base_size = 20)
     )
   }
 
