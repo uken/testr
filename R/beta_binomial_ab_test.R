@@ -87,18 +87,21 @@ beta_binomial_ab_test <- function(y, n,
     risk[g]  <- mean(loss)
   }
 
-  return(list(y = y,
-              n = n,
-              risk = risk,
-              winner = groups[risk < tolerance],
-              stop.test = min(risk) < tolerance,
-              tolerance = tolerance,
-              prob.winning = prob.winning,
-              posterior.mean = posterior.mean,
-              ci = ci,
-              conf.level = conf.level,
-              posterior_parameters = data.frame(alpha = alpha,
-                                                beta = beta),
-              groups = groups)
+  return(
+    structure(
+      list(y = y,
+           n = n,
+           risk = risk,
+           winner = groups[risk < tolerance],
+           stop.test = min(risk) < tolerance,
+           tolerance = tolerance,
+           prob.winning = prob.winning,
+           posterior.mean = posterior.mean,
+           ci = ci,
+           conf.level = conf.level,
+           posterior_parameters = data.frame(alpha = alpha,
+                                             beta = beta),
+           groups = groups),
+      class = "beta_binomial_ab_test")
   )
 }
