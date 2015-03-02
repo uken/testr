@@ -1,3 +1,17 @@
+#' Run a Beta Binomial A/B Test
+#' 
+#' Perform bayesian analysis of an experiment with a binary response variable. The experiment is modelled with a binomial likelihood and a beta prior. The beta is parameterized either with two shape parameters {alpha0, beta0} or with one shape parameter alpha0 and the  expected_conversion_rate (mode of the beta prior)
+#' @param y vector of counts of successes (i.e. number of converted users across the groups)
+#' @param n vector of counts of trials (i.e number of total users)
+#' @param alpha0 first shape parameter for beta prior. Increasing alpha0 reduces uncertainty about expected_conversion_rate.
+#' @param beta0 second shape parameter for beta prior. Ignored if expected_conversion_rate is given.
+#' @param tolerance smallest difference we care about 
+#' @param nsim number of monte carlo samples
+#' @param conf.level specifies alpha for (1-alpha)*100\% credible intervals
+#' @param expected_conversion_rate before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
+#' @return object of class beta_binomial_ab_test
+#' @examples beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
+
 beta_binomial_ab_test <- function(y, n,
                                   alpha0 = 1, beta0 = 1,
                                   tolerance = 0.001,
@@ -72,37 +86,4 @@ beta_binomial_ab_test <- function(y, n,
   )
 }
 
-plot.beta_binomial_ab_test <- function(x,
-                                       limits = c(0, 1),
-                                       labels = NULL,
-                                       title = "") {
-  ngroups <- length(x$y)
 
-  d <- expand.grid(group = seq(1, ngroups, 1),
-                   input = seq(0, 1, 0.001))
-  d$output <- mapply(FUN = dbeta,
-                     x = d$input,
-                     shape1 = x$posterior_parameters$alpha,
-                     shape2 = x$posterior_parameters$beta)
-
-  if(is.null(labels)) {
-    labels <- 1:ngroups
-  }
-
-  print(
-    ggplot2::ggplot(d,
-                    ggplot2::aes(x = input,
-                                 y = output,
-                                 colour = factor(group))) +
-      ggplot2::geom_line() +
-      ggplot2::xlab("Conversion Rate") +
-      ggplot2::ylab("Density") +
-      ggplot2::ggtitle(title) +
-      ggplot2::scale_colour_discrete(name = "Variant(s)",
-                                     labels = labels) +
-      ggplot2::scale_x_continuous(labels = scales::percent_format()) +
-      ggplot2::coord_cartesian(xlim = limits) +
-      ggplot2::theme_bw(base_size = 15) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = 15))
-  )
-}
