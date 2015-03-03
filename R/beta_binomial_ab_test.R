@@ -6,9 +6,13 @@ beta_binomial_ab_test <- function(y, n,
                                   expected_conversion_rate = NULL,
                                   groups = 1:length(y)
 ) {
+  if(any(alpha0 <= 0, beta0 <= 0))
+    stop("alpha0 and beta0 must be positive.")
 
   # parameterize either in terms of expected_conversion_rate if it is provided
   if (!is.null(expected_conversion_rate)) {
+    if(expected_conversion_rate <= 0)
+      stop("expected_conversion_rate must be positive.")
     beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
   }
 
