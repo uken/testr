@@ -9,9 +9,6 @@ lognormal_ab_test <- function(data,
                               conf.level = 0.1,
                               tolerance = 0.01,
                               save.hist = TRUE) {
-  library(ggplot2)
-  #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){
-
   # probability model:
   # conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0
   # revenue - Normal likelihood model for log(revenue). Prior:
@@ -68,11 +65,7 @@ lognormal_ab_test <- function(data,
 
   #########################
   # visualization
-  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group=as.factor(rep(groups, each=nsim)))
-  if (plot.density){
-    x <- ggplot(posterior.samples, aes(x=mean.revenue, y=..ncount.., fill=group)) +  geom_histogram(alpha=0.2, position="identity", binwidth=.005) #drop the dependency on ggplot soon
-    print(x)
-  }
+  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group = as.factor(rep(groups, each = nsim)))
 
   if (save.hist){
     hist.data <- data.frame(group=NA, bin=NA, density=NA)
@@ -95,20 +88,40 @@ lognormal_ab_test <- function(data,
     risk[g]  <- mean(loss)
   }
 
-  return(list(risk=risk,
-              winner=groups[risk < tolerance],
-              stop.test=min(risk)<tolerance,
-              tolerance=tolerance,
-              prob.winning=prob.winning,
-              posterior.mean=posterior.mean,
-              ci=ci,
-              conf.level=conf.level,
-              hist.data=hist.data,
-              n=n,
-              sample.mean=sample.mean,
-              groups = groups
-            )
-        ) #sample size and winner
-
-
+  return(
+    structure(
+      list(risk = risk,
+           winner = groups[risk < tolerance],
+           stop.test = min(risk) < tolerance,
+           tolerance = tolerance,
+           prob.winning = prob.winning,
+           posterior.mean = posterior.mean,
+           ci = ci,
+           conf.level = conf.level,
+           hist.data = hist.data,
+           n = n,
+           sample.mean = sample.mean,
+           groups = groups,
+           nsim = nsim,
+           rev.samps = rev.samps),
+      class = "lognormal_ab_test")
+  )
 }
+
+plot.lognormal_ab_test <- function(x,
+                                   limits = c(0, 1),
+                                   labels = NULL,
+                                   title = "") {
+
+  posterior.samples <- data.frame(mean.revenue = as.numeric(t(x$rev.samps)),
+                                  group = as.factor(rep(x$groups, each = x$nsim)))
+  print(
+    ggplot2::ggplot(posterior.samples,
+                    ggplot2::aes(x = mean.revenue,
+                                 fill = factor(group))) +
+      ggplot2::geom_density(alpha = 0.2,
+                            position = "identity",
+                            adjust = 4)
+  )
+}
+
