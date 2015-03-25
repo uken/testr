@@ -9,18 +9,21 @@ lognormal_ab_test <- function(data,
                               conf.level = 0.1,
                               tolerance = 0.01,
                               save.hist = TRUE) {
-  # probability model:
+  # Probability model:
   # conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0
   # revenue - Normal likelihood model for log(revenue). Prior:
   # sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
   # mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0
 
-  if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate #optionally parameterize the beta prior using monetization rate
+  if (!is.null(expected_conversion_rate)) {
+    beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
+  }
 
-  if (!is.null(expected_revenue_converted_users)) m0 <- log(expected_revenue_converted_users)- .5 * v0 * s_sq0 / (v0 + 2)  #optionally parameterize the normal prior using mean spender lt
+  if (!is.null(expected_revenue_converted_users)) {
+    m0 <- log(expected_revenue_converted_users) - 0.5 * v0 * s_sq0 / (v0 + 2)
+  }
 
   #create matrix where each row is a group (pad with NAs)
-
   names(data)[1:2] <- c('ab_group', 'revenue')
 
   n <- as.numeric(table(data[,1]))
