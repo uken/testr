@@ -80,30 +80,25 @@ plot.beta_binomial_ab_test <- function(x,
                                        limits = c(0, 1),
                                        labels = NULL,
                                        title = "") {
-  ngroups <- length(x$y)
 
-  d <- expand.grid(group = seq(1, ngroups, 1),
+  d <- expand.grid(groups = x$groups,
                    input = seq(0, 1, 0.001))
   d$output <- mapply(FUN = dbeta,
                      x = d$input,
                      shape1 = x$posterior_parameters$alpha,
                      shape2 = x$posterior_parameters$beta)
 
-  if(is.null(labels)) {
-    labels <- 1:ngroups
-  }
 
   print(
     ggplot2::ggplot(d,
                     ggplot2::aes(x = input,
                                  y = output,
-                                 colour = factor(group))) +
+                                 colour = factor(groups))) +
       ggplot2::geom_line() +
       ggplot2::xlab("Conversion Rate") +
       ggplot2::ylab("Density") +
       ggplot2::ggtitle(title) +
-      ggplot2::scale_colour_discrete(name = "Variant(s)",
-                                     labels = labels) +
+      ggplot2::scale_colour_discrete(name = "Variant(s)") +
       ggplot2::scale_x_continuous(labels = scales::percent_format()) +
       ggplot2::coord_cartesian(xlim = limits) +
       ggplot2::theme_bw(base_size = 15) +
