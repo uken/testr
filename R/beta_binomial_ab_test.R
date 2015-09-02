@@ -4,8 +4,7 @@ beta_binomial_ab_test <- function(y, n,
                                   nsim = 1e5,
                                   conf.level = 0.1,
                                   expected_conversion_rate = NULL,
-                                  groups = 1:length(y)
-) {
+                                  groups = 1:length(y)) {
   if(any(alpha0 <= 0, beta0 <= 0))
     stop("alpha0 and beta0 must be positive.")
 

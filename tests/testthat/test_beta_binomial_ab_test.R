@@ -1,4 +1,4 @@
-context("Error handling")
+context("Beta Binomial AB Test")
 
 test_that("beta_binomial_ab_test throws an error when given bad inputs", {
   expect_error(beta_binomial_ab_test(c(50, 60),
@@ -26,3 +26,4 @@ test_that("beta_binomial_ab_test throws an error when given bad inputs", {
                                      beta0 = -1),
                regexp = "alpha0 and beta0 must be positive.")
 })
+
