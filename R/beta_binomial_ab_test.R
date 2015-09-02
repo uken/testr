@@ -4,18 +4,20 @@ beta_binomial_ab_test <- function(y, n,
                                   nsim = 1e5,
                                   conf.level = 0.1,
                                   expected_conversion_rate = NULL,
-                                  groups = 1:length(y),
-                                  plot.density = TRUE,
-                                  plot.limits = c(0, 1)
-) {
+                                  groups = 1:length(y)) {
+  if(any(alpha0 <= 0, beta0 <= 0))
+    stop("alpha0 and beta0 must be positive.")
 
   # parameterize either in terms of expected_conversion_rate if it is provided
   if (!is.null(expected_conversion_rate)) {
+    if(expected_conversion_rate <= 0)
+      stop("expected_conversion_rate must be positive.")
     beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
   }
 
-  # Create container
   ngroups <- length(y)
+
+  # Create container
   ci <- matrix(nrow = ngroups,
                ncol = 2,
                dimnames = list(NULL, c('lower', 'upper')))
@@ -45,29 +47,6 @@ beta_binomial_ab_test <- function(y, n,
                                            nrow = ngroups,
                                            byrow=TRUE))
 
-  # plot posterior density
-  if(plot.density) {
-    d <- expand.grid(group = seq(1, ngroups, 1),
-                     input = seq(0, 1, 0.001))
-    d$output <- mapply(FUN = dbeta,
-                       x = d$input,
-                       shape1 = alpha,
-                       shape2 = beta)
-    print(
-      ggplot2::ggplot(d,
-                      ggplot2::aes(x = input,
-                                   y = output,
-                                   colour = factor(group))) +
-        ggplot2::geom_line() +
-        ggplot2::xlab("Conversion Rate") +
-        ggplot2::ylab("Density") +
-        ggplot2::ggtitle("Posterior Distribution(s)") +
-        ggplot2::scale_colour_discrete(name = "Variant(s)") +
-        ggplot2::scale_x_continuous(labels = scales::percent_format()) +
-        ggplot2::coord_cartesian(xlim = plot.limits)
-    )
-  }
-
   # compute risk associated with each possible decision
   risk <- rep(NA_real_, ngroups)
   for(g in 1:ngroups) {
@@ -77,18 +56,51 @@ beta_binomial_ab_test <- function(y, n,
     risk[g]  <- mean(loss)
   }
 
-  return(list(y = y,
-              n = n,
-              risk = risk,
-              winner = groups[risk < tolerance],
-              stop.test = min(risk) < tolerance,
-              tolerance = tolerance,
-              prob.winning = prob.winning,
-              posterior.mean = posterior.mean,
-              ci = ci,
-              conf.level = conf.level,
-              posterior_parameters = data.frame(alpha = alpha,
-                                                beta = beta),
-              groups = groups)
+  return(
+    structure(
+      list(y = y,
+           n = n,
+           risk = risk,
+           winner = groups[risk < tolerance],
+           stop.test = min(risk) < tolerance,
+           tolerance = tolerance,
+           prob.winning = prob.winning,
+           posterior.mean = posterior.mean,
+           ci = ci,
+           conf.level = conf.level,
+           posterior_parameters = data.frame(alpha = alpha,
+                                             beta = beta),
+           groups = groups),
+      class = "beta_binomial_ab_test")
+  )
+}
+
+plot.beta_binomial_ab_test <- function(x,
+                                       limits = c(0, 1),
+                                       labels = NULL,
+                                       title = "") {
+
+  d <- expand.grid(groups = x$groups,
+                   input = seq(0, 1, 0.001))
+  d$output <- mapply(FUN = dbeta,
+                     x = d$input,
+                     shape1 = x$posterior_parameters$alpha,
+                     shape2 = x$posterior_parameters$beta)
+
+
+  print(
+    ggplot2::ggplot(d,
+                    ggplot2::aes(x = input,
+                                 y = output,
+                                 colour = factor(groups))) +
+      ggplot2::geom_line() +
+      ggplot2::xlab("Conversion Rate") +
+      ggplot2::ylab("Density") +
+      ggplot2::ggtitle(title) +
+      ggplot2::scale_colour_discrete(name = "Variant(s)") +
+      ggplot2::scale_x_continuous(labels = scales::percent_format()) +
+      ggplot2::coord_cartesian(xlim = limits) +
+      ggplot2::theme_bw(base_size = 15) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 15))
   )
 }
