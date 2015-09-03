@@ -16,12 +16,16 @@
 #' @references \url{https://en.wikipedia.org/wiki/Gamma_distribution#Scaling}
 #' @references Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
 
-draw_mus_and_sigmas <- function(data,m0=1,k0=1,s_sq0=1,v0=1,nsim=10000){
-  
+draw_mus_and_sigmas <- function(data,
+                                m0 = 1,
+                                k0 = 1,
+                                s_sq0 = 1,
+                                v0 = 1,
+                                nsim = 10000) {
   N <- length(data)   # number of samples
   the_mean <- mean(data) # find the mean of the data
   SSD <- sum((data - the_mean)^2) # sum of squared differences between data and mean
-  
+
   # combining the prior with the data - page 79 of Gelman et al.
   # note that inv-chi-sq(v,s^2) = inv-gamma(v/2,(v*s^2)/2)
   kN <- k0 + N

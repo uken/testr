@@ -27,7 +27,7 @@ lognormal_ab_test(data, nsim = 1e+05, alpha0 = 1, beta0 = 25, m0 = 4,
 \item{n}{vector of counts of trials (i.e number of total users)}
 }
 \value{
-object of class beta_binomial_ab_test
+object of class lognormal_ab_test
 }
 \description{
 Perform bayesian analysis of an experiment with the following probability model:
@@ -40,19 +40,30 @@ The joint prior P(mu, sigma^2) is specified as a product of two priors:
   \item sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
   \item mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0
 }
+Based on \href{http://engineering.richrelevance.com/bayesian-analysis-of-normal-distributions-with-python}{Python code} by Sergey Feldman.
 }
 \examples{
 # Simulate data from the zero inflated lognormal likelihood.
-n = 1000 # users in each group
+n = 50000 # users in each group
 conversion = .1 # conversion rate. In this example, it is common to all groups
 A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0)
 B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.005)
 C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08)
 data <- data.frame(ab_group=rep(c('A','B','C'), each=n), ltv=c(A_data, B_data, C_data))
-plot_prior_lognormal_model(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
-lognormal_ab_test(data)
+plot_revenue_prior(expected_conversion_rate=0.12, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+l = lognormal_ab_test(data, expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
+plot(l)
+}
+\references{
+\url{https://en.wikipedia.org/wiki/Log-normal_distribution}
+
+\url{http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/}
+
+Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
 }
 \seealso{
+\code{\link{plot.lognormal_ab_test}} to plot the marginal posteriors
+
 \code{\link{plot_revenue_prior}} to plot all components of the prior distribution
 
 \code{\link{draw_mus_and_sigmas}} workhorse function to sample parameters of a normal posterior

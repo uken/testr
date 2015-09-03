@@ -12,3 +12,4 @@ License: MIT
 LazyData: true
 URL: https://github.com/uken/testr
 BugReports: https://github.com/uken/testr/issues
+Suggests: testthat

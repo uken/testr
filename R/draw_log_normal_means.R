@@ -20,16 +20,23 @@
 #' @references \url{https://en.wikipedia.org/wiki/Log-normal_distribution}
 #' @references Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
 
-draw_log_normal_means <- function(data,m0,k0,s_sq0,v0,nsim=10000){  
+draw_log_normal_means <- function(data,
+                                  m0,
+                                  k0,
+                                  s_sq0,
+                                  v0,
+                                  nsim=10000){
   
   # log transform the data so that it's normally distributed
   log_data <- log(data)
   
   # get samples from the joint posterior P(mu, sigma^2 | data)
-  mu_sig_sq_samples <- draw_mus_and_sigmas(log_data,m0,k0,s_sq0,v0,nsim) #
+  mu_sig_sq_samples <- draw_mus_and_sigmas(log_data,m0,k0,s_sq0,v0,nsim)
   
   # map each (mu, sigma^2) pair back to data space by finding the log-normal 
   # mean https://en.wikipedia.org/wiki/Log-normal_distribution#Arithmetic_moments
+
   log_normal_mean_samples <- exp(mu_sig_sq_samples[[1]] + mu_sig_sq_samples[[2]]/2)
+
   return(log_normal_mean_samples)
 }
