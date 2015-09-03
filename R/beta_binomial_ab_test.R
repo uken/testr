@@ -14,6 +14,8 @@
 #' @seealso \code{\link{plot.beta_binomial_ab_test}} to plot the marginal posteriors
 #' @seealso \code{\link{plot_conversion_prior}} to plot the beta prior given its parameters
 #' @seealso \code{\link{lognormal_ab_test}} to run an A/B test with a Lognormal model (i.e. for testing revenue)
+#' @references \url{http://engineering.richrelevance.com/bayesian-ab-tests} for derivation of the model
+#' @references \url{http://ayakubovich.github.io/bayes.pdf} for a parameterization fo the model in terms of expected conversion rate
 
 beta_binomial_ab_test <- function(y, n,
                                   alpha0 = 1, beta0 = 1,

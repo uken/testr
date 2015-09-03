@@ -40,6 +40,7 @@
 #' @references \url{https://en.wikipedia.org/wiki/Log-normal_distribution}
 #' @references \url{http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/}
 #' @references Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
+#' @references \url{http://ayakubovich.github.io/bayes.pdf} for a parameterization of the model in terms of expected conversion rate and revenue amongst spenders
 lognormal_ab_test <- function(data,
                               nsim = 1e5,
                               alpha0 = 1,

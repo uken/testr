@@ -60,6 +60,8 @@ plot(l)
 \url{http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/}
 
 Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
+
+\url{http://ayakubovich.github.io/bayes.pdf} for a parameterization fo the model in terms of expected conversion rate and revenue amongst spenders
 }
 \seealso{
 \code{\link{plot.lognormal_ab_test}} to plot the marginal posteriors

@@ -34,6 +34,9 @@ Perform bayesian analysis of an experiment with a binary response variable. The 
 \examples{
 beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
 }
+\references{
+\url{http://ayakubovich.github.io/bayes.pdf} for a parameterization fo the model in terms of expected conversion rate
+}
 \seealso{
 \code{\link{plot.beta_binomial_ab_test}} to plot the marginal posteriors
 
