@@ -51,9 +51,9 @@ plot(l)
 ```
 ### To do 
 
-* **A/B/C...N tests** - Handle tests with more than two groups using Hierarchical Models. [4], [10], [11] are good references on the topic. `testr` currently allows for more than two groups in a test, but does not take multiple comparison into account.
+* **A/B/C...N tests** - Handle tests with more than two groups using Hierarchical Models. [4], [10], [11] are good references on the topic. `testr` currently allows for more than two groups in a test, but does not take multiple comparisons into account.
 
-* ** Model checking ** - Add methods for verifying that the probability model good fit for the data. Gelman describes some methods for doing this in [3].
+* **Model checking** - Add methods for verifying that the probability model good fit for the data. Gelman describes some methods for doing this in [3].
 
 * **Priors** - Add more ways to specify priors.
 
