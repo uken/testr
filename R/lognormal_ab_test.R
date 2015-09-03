@@ -22,11 +22,10 @@
 #' @return object of class lognormal_ab_test
 #' @examples 
 #' # Simulate data from the zero inflated lognormal likelihood.  
-#' n = 50000 # users in each group
-#' conversion = .1 # conversion rate. In this example, it is common to all groups
-#' A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0)
-#' B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.005)
-#' C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08)
+#' n <- 10000
+#' A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0, sdlog=.2)
+#' B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08, sdlog=.2)
+#' C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.15, sdlog=.2)
 #' data <- data.frame(ab_group=rep(c('A','B','C'), each=n), ltv=c(A_data, B_data, C_data))
 #' plot_revenue_prior(expected_conversion_rate=0.12, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
 #' l = lognormal_ab_test(data, expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
