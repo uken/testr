@@ -31,7 +31,7 @@ plot_revenue_prior(alpha0 = 1, beta0 = 1, s_sq0 = 1, v0 = 1, m0 = 1,
 Visualize all components of the prior distribution for a Lognormal A/B test for revenue.
 }
 \examples{
-plot_prior_lognormal_model(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+plot_revenue_prior(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
 }
 \seealso{
 \code{\link{lognormal_ab_test}} to run an A/B test with a Lognormal model (i.e. for testing revenue)
