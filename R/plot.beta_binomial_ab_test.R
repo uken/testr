@@ -11,7 +11,6 @@
 #' plot(bb)
 #' plot(bb, limits=c(0,.3), labels=c('A', 'B'), title='AB Test: Signups')
 
-
 plot.beta_binomial_ab_test <- function(x,
                                        limits = c(0, 1),
                                        labels = NULL,

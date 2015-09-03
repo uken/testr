@@ -11,6 +11,9 @@
 #' @param expected_conversion_rate before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
 #' @return object of class beta_binomial_ab_test
 #' @examples beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
+#' @seealso \code{\link{plot.beta_binomial_ab_test}} to plot the marginal posteriors
+#' @seealso \code{\link{plot_conversion_prior}} to plot the beta prior given its parameters
+#' @seealso \code{\link{lognormal_ab_test}} to run an A/B test with a Lognormal model (i.e. for testing revenue)
 
 beta_binomial_ab_test <- function(y, n,
                                   alpha0 = 1, beta0 = 1,

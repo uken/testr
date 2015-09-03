@@ -1,12 +1,44 @@
+#' Run a A/B Test with a Lognormal model (e.g. for testing revenue)
+#' 
+#' Perform bayesian analysis of an experiment with the following probability model:
+#' \enumerate{
+#'   \item Conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0  
+#'   \item Revenue amongst spenders - Normal likelihood model for log(revenue).
+#' }
+#' The joint prior P(mu, sigma^2) is specified as a product of two priors: 
+#' \enumerate{
+#'   \item sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
+#'   \item mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0
+#' }
+#' 
+#' @param y vector of counts of successes (i.e. number of converted users across the groups)
+#' @param n vector of counts of trials (i.e number of total users)
+#' @param alpha0 first shape parameter for beta prior. Increasing alpha0 reduces uncertainty about expected_conversion_rate.
+#' @param beta0 second shape parameter for beta prior. Ignored if expected_conversion_rate is given.
+#' @param tolerance smallest difference we care about 
+#' @param nsim number of monte carlo samples
+#' @param conf.level specifies alpha for (1-alpha)*100\% credible intervals
+#' @param expected_conversion_rate before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
+#' @return object of class beta_binomial_ab_test
+#' @examples 
+#' # Simulate data from the zero inflated lognormal likelihood.  
+#' n = 1000 # users in each group
+#' conversion = .1 # conversion rate. In this example, it is common to all groups
+#' A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0)
+#' B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.005)
+#' C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08)
+#' data <- data.frame(ab_group=rep(c('A','B','C'), each=n), ltv=c(A_data, B_data, C_data))
+#' plot_prior_lognormal_model(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+#' lognormal_ab_test(data)
+
+#' @seealso \code{\link{plot_revenue_prior}} to plot all components of the prior distribution
+#' @seealso \code{\link{draw_mus_and_sigmas}} workhorse function to sample parameters of a normal posterior 
+#' @seealso \code{\link{draw_log_normal_means}} workhorse function to sample the mean parameter of a lognormal posterior
+#' @seealso \code{\link{beta_binomial_ab_test}} to run a Beta-Binomial A/B test (i.e. for conversion rate)
+#' @references \url{https://en.wikipedia.org/wiki/Log-normal_distribution}
+
 lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_sq0=1, v0=5, expected_revenue_converted_users=NULL, expected_conversion_rate=NULL, plot.density=FALSE, conf.level=.1, tolerance=.01, save.hist=TRUE){  
   library(ggplot2)
-  #bayes.lognormal.test <- function(data, nsim=1e5, alpha0=1, beta0=1, m0=4, k0=1, s_sq0=1, v0=1, plot.density=FALSE, conf.level=.1, tolerance=.01){  
-  
-  # probability model:  
-  # conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0  
-  # revenue - Normal likelihood model for log(revenue). Prior: 
-  # sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
-  # mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0      
   
   if (!is.null(expected_conversion_rate)) beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate #optionally parameterize the beta prior using monetization rate
   
@@ -74,11 +106,6 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
   hist.data <- hist.data[-1,]
   
   # stopping rule  
-  
-  #winner <- which.max(prob.winning) #which group has the highest posterior probability of winning  
-  #loss <- apply(rev.samps, FUN=max, MARGIN=2) - rev.samps[winner,] #difference between the MAP mean (mean for the group we think is the best) and the group that is actually the best  
-  #risk <- mean(loss)
-  
   risk <- rep(NA_real_,ngroups)
   for (g in 1:ngroups){
     loss <- apply(rev.samps, FUN=max, MARGIN=2) - rev.samps[g,] #difference between the MAP mean and the group that is actually the best        
@@ -99,6 +126,4 @@ lognormal_ab_test <- function(data, nsim=1e5, alpha0=1, beta0=25, m0=4, k0=1, s_
               groups = groups
             )
         ) #sample size and winner
-  
-  
 }
