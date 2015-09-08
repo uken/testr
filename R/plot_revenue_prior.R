@@ -1,3 +1,19 @@
+#' Visualize all components of the prior distribution for a Lognormal A/B test for revenue.
+
+#' @param alpha0 first shape parameter for beta prior. Increasing alpha0 reduces uncertainty about expected_conversion_rate.
+#' @param beta0 second shape parameter for beta prior. Ignored if expected_conversion_rate is given.
+#' @param s_sq0 number of degrees of freedom of variance.
+#' @param v0 scale of the sigma_squared parameter. Compare with number of data samples.
+#' @param m0 mean parameter for the normal prior on mu | sigma^2. Ignored if expected_revenue_converted_users is specified.
+#' @param k0 scaling parameter for the variance of the normal prior on mu | sigma^2
+#' @param n number of monte carlo samples
+#' @param expected_revenue_converted_users expected revenue for converted (spending) users
+#' @param expected_conversion_rate before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 #' to 1.
+#' @examples plot_revenue_prior(expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+
+#' @seealso \code{\link{lognormal_ab_test}} to run an A/B test with a Lognormal model (i.e. for testing revenue)
+#' @seealso \code{\link{plot_conversion_prior}} to plot the beta prior given its parameters
+
 plot_revenue_prior <- function(alpha0 = 1,
                                beta0 = 1,
                                s_sq0 = 1,

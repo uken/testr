@@ -1,3 +1,45 @@
+#' Run a A/B Test with a Lognormal model (e.g. for testing revenue)
+#' 
+#' Perform bayesian analysis of an experiment with the following probability model:
+#' \enumerate{
+#'   \item Conversion - binomial likelihood, beta prior with shape parameters alpha0, beta0  
+#'   \item Revenue amongst spenders - Normal likelihood model for log(revenue).
+#' }
+#' The joint prior P(mu, sigma^2) is specified as a product of two priors: 
+#' \enumerate{
+#'   \item sigma^2 - inverse gamma prior with shape=v0, scale=s_sq0
+#'   \item mu | sigma^2 - normal prior with mean=m0, variance=sigma^2/k0
+#' }
+#' Based on \href{http://engineering.richrelevance.com/bayesian-analysis-of-normal-distributions-with-python}{Python code} by Sergey Feldman.
+#' @param y vector of counts of successes (i.e. number of converted users across the groups)
+#' @param n vector of counts of trials (i.e number of total users)
+#' @param alpha0 first shape parameter for beta prior. Increasing alpha0 reduces uncertainty about expected_conversion_rate.
+#' @param beta0 second shape parameter for beta prior. Ignored if expected_conversion_rate is given.
+#' @param tolerance smallest difference we care about 
+#' @param nsim number of monte carlo samples
+#' @param conf.level specifies alpha for (1-alpha)*100\% credible intervals
+#' @param expected_conversion_rate before seeing the data, what is is the most likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
+#' @return object of class lognormal_ab_test
+#' @examples 
+#' # Simulate data from the zero inflated lognormal likelihood.  
+#' n <- 10000
+#' A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0, sdlog=.2)
+#' B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08, sdlog=.2)
+#' C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.15, sdlog=.2)
+#' data <- data.frame(ab_group=rep(c('A','B','C'), each=n), ltv=c(A_data, B_data, C_data))
+#' plot_revenue_prior(expected_conversion_rate=0.12, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
+#' l = lognormal_ab_test(data, expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
+#' plot(l)
+
+#' @seealso \code{\link{plot.lognormal_ab_test}} to plot the marginal posteriors
+#' @seealso \code{\link{plot_revenue_prior}} to plot all components of the prior distribution
+#' @seealso \code{\link{draw_mus_and_sigmas}} workhorse function to sample parameters of a normal posterior 
+#' @seealso \code{\link{draw_log_normal_means}} workhorse function to sample the mean parameter of a lognormal posterior
+#' @seealso \code{\link{beta_binomial_ab_test}} to run a Beta-Binomial A/B test (i.e. for conversion rate)
+#' @references \url{https://en.wikipedia.org/wiki/Log-normal_distribution}
+#' @references \url{http://engineering.richrelevance.com/bayesian-ab-testing-with-a-log-normal-model/}
+#' @references Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
+#' @references \url{http://ayakubovich.github.io/bayes.pdf} for a parameterization of the model in terms of expected conversion rate and revenue amongst spenders
 lognormal_ab_test <- function(data,
                               nsim = 1e5,
                               alpha0 = 1,
@@ -68,7 +110,9 @@ lognormal_ab_test <- function(data,
 
   #########################
   # visualization
-  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)), group = as.factor(rep(groups, each = nsim)))
+  posterior.samples <- data.frame(mean.revenue=as.numeric(t(rev.samps)),
+                                  group = as.factor(rep(groups, each = nsim))
+                                  )
 
   if (save.hist){
     hist.data <- data.frame(group=NA, bin=NA, density=NA)
@@ -78,13 +122,8 @@ lognormal_ab_test <- function(data,
     }
   }
   hist.data <- hist.data[-1,]
-
-  # stopping rule
-
-  #winner <- which.max(prob.winning) #which group has the highest posterior probability of winning
-  #loss <- apply(rev.samps, FUN=max, MARGIN=2) - rev.samps[winner,] #difference between the MAP mean (mean for the group we think is the best) and the group that is actually the best
-  #risk <- mean(loss)
-
+  
+  # stopping rule  
   risk <- rep(NA_real_,ngroups)
   for (g in 1:ngroups){
     loss <- apply(rev.samps, FUN=max, MARGIN=2) - rev.samps[g,] #difference between the MAP mean and the group that is actually the best
@@ -110,21 +149,3 @@ lognormal_ab_test <- function(data,
       class = "lognormal_ab_test")
   )
 }
-
-plot.lognormal_ab_test <- function(x,
-                                   limits = c(0, 1),
-                                   labels = NULL,
-                                   title = "") {
-
-  posterior.samples <- data.frame(mean.revenue = as.numeric(t(x$rev.samps)),
-                                  group = as.factor(rep(x$groups, each = x$nsim)))
-  print(
-    ggplot2::ggplot(posterior.samples,
-                    ggplot2::aes(x = mean.revenue,
-                                 fill = factor(group))) +
-      ggplot2::geom_density(alpha = 0.2,
-                            position = "identity",
-                            adjust = 4)
-  )
-}
-
