@@ -5,7 +5,7 @@
 \title{Plot results from a beta_binomial_ab_test object}
 \usage{
 \method{plot}{beta_binomial_ab_test}(x, limits = c(0, 1), labels = NULL,
-  title = NULL, plot = TRUE, ...)
+  title = NULL, ...)
 }
 \arguments{
 \item{x}{object of class beta_binomial_ab_test}
@@ -15,10 +15,6 @@
 \item{labels}{vector with group names}
 
 \item{title}{graph title}
-
-\item{plot}{logical flag indicating whether to plot the ggplot object. If
-FALSE, will return the object for further manipulation (e.g. applying a
-theme)}
 
 \item{...}{Additional arguments to pass on to \code{geom_line()}}
 }
@@ -33,7 +29,7 @@ Plot posterior distributions for a Beta Binomial A/B test using ggplot2
                              expected_conversion_rate = 0.1, alpha0 = 0.1)
  plot(bb)
  plot(bb, limits = c(0, 0.3), labels = c('A', 'B'), title = 'AB Test: Signups')
- g <- plot(bb, plot = FALSE)
+ g <- plot(bb)
  g + ggplot2::theme_bw()
 }
 \seealso{

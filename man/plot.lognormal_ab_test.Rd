@@ -5,7 +5,7 @@
 \title{Plot results from a lognormal_ab_test object}
 \usage{
 \method{plot}{lognormal_ab_test}(x, limits = c(0, 1), labels = NULL,
-  title = "", plot = TRUE, ...)
+  title = "", ...)
 }
 \arguments{
 \item{x}{object of class lognormal_ab_test}
@@ -15,10 +15,6 @@
 \item{labels}{vector with group names}
 
 \item{title}{graph title}
-
-\item{plot}{logical flag indicating whether to plot the ggplot object. If
-FALSE, will return the object for further manipulation (e.g. applying a
-theme)}
 
 \item{...}{Additional arguments to pass on to \code{geom_density()}}
 }
@@ -40,7 +36,7 @@ Plot posterior distributions for a Zero-Inflated Lognormal A/B test using
  l = lognormal_ab_test(data)
  plot(l)
  plot(l, limits = c(0, 0.5), labels = c('A', 'B', 'C'), title = 'AB Test: Lifetime Value')
- g <- plot(l, plot = FALSE)
+ g <- plot(l)
  g + ggplot2::theme_bw()
 }
 \seealso{

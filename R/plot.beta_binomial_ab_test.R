@@ -6,9 +6,6 @@
 #' @param limits vector with (min,max) x-axis values
 #' @param labels vector with group names
 #' @param title graph title
-#' @param plot logical flag indicating whether to plot the ggplot object. If
-#'  FALSE, will return the object for further manipulation (e.g. applying a
-#'  theme)
 #' @param ... Additional arguments to pass on to \code{geom_line()}
 #'
 #' @return object of class ggplot2
@@ -17,7 +14,7 @@
 #'                              expected_conversion_rate = 0.1, alpha0 = 0.1)
 #'  plot(bb)
 #'  plot(bb, limits = c(0, 0.3), labels = c('A', 'B'), title = 'AB Test: Signups')
-#'  g <- plot(bb, plot = FALSE)
+#'  g <- plot(bb)
 #'  g + ggplot2::theme_bw()
 #' @seealso \code{\link{beta_binomial_ab_test}} to run a Beta-Binomial A/B test
 #'   (i.e. for conversion rate)
@@ -26,7 +23,7 @@
 #' @importFrom scales percent_format
 #' @export
 
-plot.beta_binomial_ab_test <- function(x, limits = c(0, 1), labels = NULL, title = NULL, plot = TRUE, ...) {
+plot.beta_binomial_ab_test <- function(x, limits = c(0, 1), labels = NULL, title = NULL, ...) {
   d <- expand.grid(groups = x$groups, input = seq(limits[1], limits[2], 0.001))
   d$output <- mapply(FUN = dbeta, x = d$input,
                      shape1 = x$posterior_parameters$alpha,
@@ -41,9 +38,5 @@ plot.beta_binomial_ab_test <- function(x, limits = c(0, 1), labels = NULL, title
                                 labels = labels, type = "qual", palette = "Set1") +
     ggplot2::scale_x_continuous(labels = percent_format(), limits = limits) +
     ggplot2::labs(x = "Conversion Rate", y = "Density", title = title)
-  if (plot) {
-    print(gg)
-  } else {
-    return(invisible(gg))
-  }
+  return(gg)
 }

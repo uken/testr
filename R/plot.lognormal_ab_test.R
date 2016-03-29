@@ -7,9 +7,6 @@
 #' @param limits vector with (min,max) x-axis values
 #' @param labels vector with group names
 #' @param title graph title
-#' @param plot logical flag indicating whether to plot the ggplot object. If
-#'  FALSE, will return the object for further manipulation (e.g. applying a
-#'  theme)
 #' @param ... Additional arguments to pass on to \code{geom_density()}
 #'
 #' @return object of class ggplot2
@@ -24,7 +21,7 @@
 #'  l = lognormal_ab_test(data)
 #'  plot(l)
 #'  plot(l, limits = c(0, 0.5), labels = c('A', 'B', 'C'), title = 'AB Test: Lifetime Value')
-#'  g <- plot(l, plot = FALSE)
+#'  g <- plot(l)
 #'  g + ggplot2::theme_bw()
 #' @seealso \code{\link{plot_revenue_prior}} to plot all components of the
 #'   prior distribution
@@ -32,7 +29,7 @@
 #'   model (i.e. for testing revenue)
 #' @export
 
-plot.lognormal_ab_test <- function(x, limits = c(0, 1), labels = NULL, title = "", plot = TRUE, ...) {
+plot.lognormal_ab_test <- function(x, limits = c(0, 1), labels = NULL, title = "", ...) {
     posterior_samples <- data.frame(mean.revenue = as.numeric(t(x$rev.samps)),
                                     group = as.factor(rep(x$groups, each = x$nsim)))
     if (is.null(labels)) {
@@ -43,9 +40,5 @@ plot.lognormal_ab_test <- function(x, limits = c(0, 1), labels = NULL, title = "
       ggplot2::scale_x_continuous(limits = limits) +
       ggplot2::scale_fill_discrete(name = ifelse(length(x$groups) > 1, "Variants", "Variant"), labels = labels) +
       ggplot2::labs(title = title, y = "Density", x = "Mean Revenue")
-    if (plot) {
-      print(gg)
-    } else {
-      return(invisible(gg))
-    }
+    return(gg)
 }
