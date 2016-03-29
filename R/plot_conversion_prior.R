@@ -10,6 +10,8 @@
 #'   to return the components that can be used to plot.
 #' @param return_coords Allows to optionally return plotting components when
 #'   \code{plot} is set to true.
+#' @param resolution Controls the smoothness of the curves generated. Lower
+#'   values lead to more jagged curves.
 #'
 #' @examples plot_conversion_prior(alpha0 = 9, beta0 = 19)
 #'
@@ -21,20 +23,14 @@
 #'   (i.e. for conversion rate)
 #' @export
 
-plot_conversion_prior <- function(expected_conversion_rate = NA,
-                                  alpha0 = NA,
-                                  beta0 = NA,
-                                  plot = TRUE,
-                                  n = 101,
-                                  return_coords = FALSE) {
+plot_conversion_prior <- function(expected_conversion_rate = NA, alpha0 = NA, beta0 = NA,
+                                  plot = TRUE, resolution = 1000, return_coords = FALSE) {
   if (!is.na(expected_conversion_rate) &
       expected_conversion_rate == 0) {
     stop('expected_conversion_rate must be strictly positive!')
   }
   
-  if (sum(is.na(c(
-    alpha0, beta0, expected_conversion_rate
-  ))) != 1) {
+  if (sum(is.na(c(alpha0, beta0, expected_conversion_rate))) != 1) {
     stop('Specify exactly two of {expected_conversion_rate, alpha0, beta0}')
   }
   
@@ -43,14 +39,15 @@ plot_conversion_prior <- function(expected_conversion_rate = NA,
     beta0 <- 2 - alpha0 + (alpha0 - 1) / expected_conversion_rate
   }
   if (plot) {
-    graph <- curve(dbeta(x, shape1 = alpha0, shape2 = beta0), n = n)
+    graph <- curve(dbeta(x, shape1 = alpha0, shape2 = beta0), n = resolution, lwd = 2,
+                   ylab = "Density", xlab = "Parameter", main = "Beta prior distribution")
     if (return_coords) {
       return(data.frame(x = graph$x, y = graph$y))
     } else {
       return(invisible())
     }
   } else {
-    x <- seq(0, 1, length.out = n)
+    x <- seq(0, 1, length.out = resolution)
     y <- dbeta(x, shape1 = alpha0, shape2 = beta0)
     return(data.frame(x = x, y = y))
   }

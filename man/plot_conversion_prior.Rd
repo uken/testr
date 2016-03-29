@@ -5,7 +5,7 @@
 \title{Visualize the Beta prior distribution for a Beta-Binomial A/B test}
 \usage{
 plot_conversion_prior(expected_conversion_rate = NA, alpha0 = NA,
-  beta0 = NA, plot = TRUE, n = 101, return_coords = FALSE)
+  beta0 = NA, plot = TRUE, resolution = 1000, return_coords = FALSE)
 }
 \arguments{
 \item{expected_conversion_rate}{before seeing the data, what is is the most
@@ -19,6 +19,9 @@ reduces uncertainty about \code{expected_conversion_rate}.}
 
 \item{plot}{Logical flag indicating whether to actually plot the prior or
 to return the components that can be used to plot.}
+
+\item{resolution}{Controls the smoothness of the curves generated. Lower
+values lead to more jagged curves.}
 
 \item{return_coords}{Allows to optionally return plotting components when
 \code{plot} is set to true.}

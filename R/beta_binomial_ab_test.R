@@ -18,10 +18,13 @@
 #' @param conf.level specifies alpha for (1-alpha)*100\% credible intervals
 #' @param expected_conversion_rate before seeing the data, what is is the most
 #'   likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.
+#' @param groups A character vector of group labels. Defaults to "A", "B", ...
 #'
 #' @return object of class beta_binomial_ab_test
 #'
-#' @examples beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
+#' @examples
+#'   beta_binomial_ab_test(y = c(100,120), n = c(1000, 999),
+#'                         expected_conversion_rate = 0.1, alpha0 = 0.1)
 #' @seealso \code{\link{plot.beta_binomial_ab_test}} to plot the marginal
 #'   posteriors
 #' @seealso \code{\link{plot_conversion_prior}} to plot the beta prior given
@@ -34,15 +37,9 @@
 #'   parameterization fo the model in terms of expected conversion rate
 #' @export
 
-beta_binomial_ab_test <- function(y,
-                                  n,
-                                  alpha0 = 1,
-                                  beta0 = 1,
-                                  tolerance = 0.001,
-                                  nsim = 1e5,
-                                  conf.level = 0.1,
-                                  expected_conversion_rate = NULL,
-                                  groups = 1:length(y)) {
+beta_binomial_ab_test <- function(y, n, alpha0 = 1, beta0 = 1, tolerance = 0.001, nsim = 1e5,
+                                  conf.level = 0.1, expected_conversion_rate = NULL,
+                                  groups = LETTERS[1:length(y)]) {
   if (any(alpha0 <= 0, beta0 <= 0))
     stop("alpha0 and beta0 must be positive.")
   

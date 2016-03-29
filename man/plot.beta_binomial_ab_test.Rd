@@ -29,16 +29,18 @@ object of class ggplot2
 Plot posterior distributions for a Beta Binomial A/B test using ggplot2
 }
 \examples{
-bb <- beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
+ bb <- beta_binomial_ab_test(y = c(100, 120), n = c(1000, 999),
+                             expected_conversion_rate = 0.1, alpha0 = 0.1)
  plot(bb)
- plot(bb, limits=c(0,.3), labels=c('A', 'B'), title='AB Test: Signups')
+ plot(bb, limits = c(0, 0.3), labels = c('A', 'B'), title = 'AB Test: Signups')
  g <- plot(bb, plot = FALSE)
  g + ggplot2::theme_bw()
- g + ggthemes::theme_tufte()
 }
 \seealso{
-\code{\link{beta_binomial_ab_test}} to run a Beta-Binomial A/B test (i.e. for conversion rate)
+\code{\link{beta_binomial_ab_test}} to run a Beta-Binomial A/B test
+  (i.e. for conversion rate)
 
-\code{\link{plot_conversion_prior}} to plot the beta prior given its parameters
+\code{\link{plot_conversion_prior}} to plot the beta prior given
+  its parameters
 }
 

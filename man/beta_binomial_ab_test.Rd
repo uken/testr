@@ -6,7 +6,7 @@
 \usage{
 beta_binomial_ab_test(y, n, alpha0 = 1, beta0 = 1, tolerance = 0.001,
   nsim = 1e+05, conf.level = 0.1, expected_conversion_rate = NULL,
-  groups = 1:length(y))
+  groups = LETTERS[1:length(y)])
 }
 \arguments{
 \item{y}{vector of counts of successes (i.e. number of converted users
@@ -28,6 +28,8 @@ reduces uncertainty about \code{expected_conversion_rate}.}
 
 \item{expected_conversion_rate}{before seeing the data, what is is the most
 likely conversion rate (i.e. mode of the beta prior)? From 0 to 1.}
+
+\item{groups}{A character vector of group labels. Defaults to "A", "B", ...}
 }
 \value{
 object of class beta_binomial_ab_test
@@ -40,7 +42,8 @@ Perform bayesian analysis of an experiment with a binary response variable.
   (mode of the beta prior).
 }
 \examples{
-beta_binomial_ab_test(y=c(100,120), n=c(1000, 999), expected_conversion_rate=.1, alpha0=.1)
+  beta_binomial_ab_test(y = c(100,120), n = c(1000, 999),
+                        expected_conversion_rate = 0.1, alpha0 = 0.1)
 }
 \references{
 \url{http://engineering.richrelevance.com/bayesian-ab-tests} for

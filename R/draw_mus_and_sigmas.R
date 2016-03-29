@@ -16,31 +16,23 @@
 #' @references \url{https://en.wikipedia.org/wiki/Gamma_distribution#Scaling}
 #' @references Gelman, Andrew, et al. Bayesian data analysis. Vol. 2. London: Chapman & Hall/CRC, 2014.
 
-draw_mus_and_sigmas <- function(data,
-                                m0 = 1,
-                                k0 = 1,
-                                s_sq0 = 1,
-                                v0 = 1,
-                                nsim = 10000) {
-  N <- length(data)   # number of samples
-  the_mean <- mean(data) # find the mean of the data
-  SSD <-
-    sum((data - the_mean) ^ 2) # sum of squared differences between data and mean
+draw_mus_and_sigmas <- function(data, m0 = 1, k0 = 1, s_sq0 = 1, v0 = 1, nsim = 10000) {
+  N <- length(data)                 # number of samples
+  the_mean <- mean(data)            # find the mean of the data
+  SSD <- sum((data - the_mean) ^ 2) # sum of squared differences between data and mean
   
   # combining the prior with the data - page 79 of Gelman et al.
   # note that inv-chi-sq(v,s^2) = inv-gamma(v/2,(v*s^2)/2)
   kN <- k0 + N
   mN <- (k0 / kN) * m0 + (N / kN) * the_mean
   vN <- v0 + N
-  vN_times_s_sqN <-
-    v0 * s_sq0 + SSD + (N * k0 * (m0 - the_mean) * 2) / kN
+  vN_times_s_sqN <- v0 * s_sq0 + SSD + (N * k0 * (m0 - the_mean) * 2) / kN
   
   # draw the variances from an inverse gamma # (params: alpha, beta)
   alpha <- vN / 2
   beta <- vN_times_s_sqN / 2
   # if X ~ inv-gamma(a,1) then b*X ~ inv-gamma(a,b) [https://en.wikipedia.org/wiki/Gamma_distribution#Scaling]
-  sig_sq_samples <-
-    beta * 1 / rgamma(n = nsim, shape = alpha, rate = 1)
+  sig_sq_samples <- beta * 1 / rgamma(n = nsim, shape = alpha, rate = 1)
   
   mean_norm <- mN
   sd_norm <- sqrt(sig_sq_samples / kN)
