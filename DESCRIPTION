@@ -1,15 +1,24 @@
 Package: testr
 Title: Tools for Bayesian analysis of A/B tests
-Version: 0.2
-Authors: c( 
-    person("Alex", "Yakubovich", email="alex.yakubovich@gmail.com"),
-    person("Christopher", "Peters", <cpeter9@gmail.com>)
-    )
-Description: testr is a set of tools for Bayesian analysis of randomized experiments (A/B tests). It uses an adaptive design (i.e. early stopping rules), allowing tests to end as early as possible. Currently supports probability models for binary data (e.g. retention, conversion metrics) as well as zero-inflated data (e.g. Lifetime value).
-Depends: R (>= 3.1.1)
-Imports: ggplot2
-License: MIT
+Version: 0.3
+Authors@R: c(
+  person("Alex", "Yakubovich", email = "alex.yakubovich@gmail.com", role = "cre"),
+  person("Christopher", "Peters", email = "cpeter9@gmail.com", role = "aut"),
+  person("Mikhail", "Popov", email = "mpopov@wikimedia.org", role = "ctb"))
+Description: testr is a set of tools for Bayesian analysis of randomized
+    experiments (A/B tests). It uses an adaptive design (i.e. early stopping rules),
+    allowing tests to end as early as possible. Currently supports probability
+    models for binary data (e.g. retention, conversion metrics) as well as zero-
+    inflated data (e.g. Lifetime value).
+Depends:
+    R (>= 3.1.1)
+Imports:
+    ggplot2,
+    scales
+License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/uken/testr
 BugReports: https://github.com/uken/testr/issues
-Suggests: testthat
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
