@@ -14,13 +14,13 @@ Two probability models are currently supported:
 * Uses Monte Carlo integration of the posterior to evaluate stopping rules
 * Implements methods for visualizing the prior/posterior distributions
 
-### Example Usage
+## Example Usage
 
 Install the package using devtools:
 
 ```R
 # install.packages('devtools')
-devtools::install_github('uken/testr')
+devtools::install_github('bearloga/testr')
 library(testr)
 ?testr
 ```
@@ -49,7 +49,7 @@ l  =  lognormal_ab_test(data, expected_conversion_rate = 0.65, alpha0 = 15, expe
 plot(l)
 ```
 
-### To do 
+## To do 
 
 - **A/B/C...N tests** - Handle tests with more than two groups using Hierarchical Models. [4], [10], [11] are good references on the topic. `testr` currently allows for more than two groups in a test, but does not take multiple comparisons into account.
 
@@ -57,7 +57,7 @@ plot(l)
 
 - **Priors** - Add more ways to specify priors.
 
-### References
+## References
 
  1. http://engineering.richrelevance.com/bayesian-ab-tests
 
