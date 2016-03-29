@@ -18,44 +18,44 @@ Two probability models are currently supported:
 
 Install the package using devtools:
 
-```
-#install testr
-library(devtools)
-install_github('uken/testr')
+```R
+# install.packages('devtools')
+devtools::install_github('uken/testr')
 library(testr)
 ?testr
 ```
 
 To run a simple test for conversion with a Beta-Binomial model:
 
-```
-beta_binomial_ab_test(y=c(100,115), n=c(1000, 1000)) #flat prior
-plot_conversion_prior(expected_conversion_rate=.1, alpha0=2) #try tweaking alpha0 to decrase variance
-beta_binomial_ab_test(y=c(100,115), n=c(1000, 1000), expected_conversion_rate=.1, alpha0=2) #informative prior
+```R
+beta_binomial_ab_test(y = c(100,115), n = c(1000, 1000)) # flat prior
+plot_conversion_prior(expected_conversion_rate = .1, alpha0 = 2) # try tweaking alpha0 to decrase variance
+beta_binomial_ab_test(y = c(100,115), n = c(1000, 1000), expected_conversion_rate = .1, alpha0 = 2) # informative prior
 ```
 
 To run a test for revenue with a zero-inflated lognormal model:
 
-```
+```R
 ##### simulate some data from an A/B/C test
 n <- 10000
-A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0, sdlog=.2)
-B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.08, sdlog=.2)
-C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog=0.15, sdlog=.2)
-data <- data.frame(ab_group=rep(c('A','B','C'), each=n), ltv=c(A_data, B_data, C_data))
+A_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog = 0, sdlog = .2)
+B_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog = 0.08, sdlog = .2)
+C_data <- rbinom(n,1,conversion) * rlnorm(n, meanlog = 0.15, sdlog = .2)
+data <- data.frame(ab_group = rep(c('A','B','C'), each = n), ltv = c(A_data, B_data, C_data))
 
 ##### plot the priors and run the test
-plot_revenue_prior(expected_conversion_rate=0.12, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2) #specify prior
-l = lognormal_ab_test(data, expected_conversion_rate=0.65, alpha0=15, expected_revenue_converted_users=1.5, v0=73, k0=100, s_sq0=1.2)
+plot_revenue_prior(expected_conversion_rate = 0.12, alpha0 = 15, expected_revenue_converted_users = 1.5, v0 = 73, k0 = 100, s_sq0 = 1.2) # specify prior
+l  =  lognormal_ab_test(data, expected_conversion_rate = 0.65, alpha0 = 15, expected_revenue_converted_users = 1.5, v0 = 73, k0 = 100, s_sq0 = 1.2)
 plot(l)
 ```
+
 ### To do 
 
-* **A/B/C...N tests** - Handle tests with more than two groups using Hierarchical Models. [4], [10], [11] are good references on the topic. `testr` currently allows for more than two groups in a test, but does not take multiple comparisons into account.
+- **A/B/C...N tests** - Handle tests with more than two groups using Hierarchical Models. [4], [10], [11] are good references on the topic. `testr` currently allows for more than two groups in a test, but does not take multiple comparisons into account.
 
-* **Model checking** - Add methods for verifying that the probability model good fit for the data. Gelman describes some methods for doing this in [3].
+- **Model checking** - Add methods for verifying that the probability model good fit for the data. Gelman describes some methods for doing this in [3].
 
-* **Priors** - Add more ways to specify priors.
+- **Priors** - Add more ways to specify priors.
 
 ### References
 
